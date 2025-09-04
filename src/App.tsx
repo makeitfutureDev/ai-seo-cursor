@@ -454,6 +454,7 @@ function App() {
         language={language}
         onLanguageChange={setLanguage}
         onShowProfile={() => setCurrentView('profile')}
+        appTitle={t.appTitle}
       />
     );
   }
