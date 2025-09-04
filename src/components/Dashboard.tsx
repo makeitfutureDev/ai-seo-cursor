@@ -318,7 +318,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       responses?.forEach(response => {
         const responseDate = new Date(response.created_at);
-        const dateKey = \`${responseDate.getFullYear()}-${String(responseDate.getMonth() + 1).padStart(2, '0')}-${String(responseDate.getDate()).padStart(2, '0')}`;
+        const dateKey = `${responseDate.getFullYear()}-${String(responseDate.getMonth() + 1).padStart(2, '0')}-${String(responseDate.getDate()).padStart(2, '0')}`;
 
         if (!dailyVisibility[dateKey]) {
           dailyVisibility[dateKey] = { total: 0, appears: 0 };
@@ -372,7 +372,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           const compName = comp.name;
           const dailyCompResponses = responses?.filter(r => {
             const rDate = new Date(r.created_at);
-            const rDateKey = \`${rDate.getFullYear()}-${String(rDate.getMonth() + 1).padStart(2, '0')}-${String(rDate.getDate()).padStart(2, '0')}`;
+            const rDateKey = `${rDate.getFullYear()}-${String(rDate.getMonth() + 1).padStart(2, '0')}-${String(rDate.getDate()).padStart(2, '0')}`;
             return rDateKey === date;
           }) || [];
 
