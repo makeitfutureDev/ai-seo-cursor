@@ -318,7 +318,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       responses?.forEach(response => {
         const responseDate = new Date(response.created_at);
-        const dateKey = `${responseDate.getFullYear()}-${String(responseDate.getMonth() + 1).padStart(2, '0')}-${String(responseDate.getDate()).padStart(2, '0')}`;
+        const dateKey = \`${responseDate.getFullYear()}-${String(responseDate.getMonth() + 1).padStart(2, '0')}-${String(responseDate.getDate()).padStart(2, '0')}`;
 
         if (!dailyVisibility[dateKey]) {
           dailyVisibility[dateKey] = { total: 0, appears: 0 };
@@ -372,7 +372,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           const compName = comp.name;
           const dailyCompResponses = responses?.filter(r => {
             const rDate = new Date(r.created_at);
-            const rDateKey = `${rDate.getFullYear()}-${String(rDate.getMonth() + 1).padStart(2, '0')}-${String(rDate.getDate()).padStart(2, '0')}`;
+            const rDateKey = \`${rDate.getFullYear()}-${String(rDate.getMonth() + 1).padStart(2, '0')}-${String(rDate.getDate()).padStart(2, '0')}`;
             return rDateKey === date;
           }) || [];
 
@@ -620,14 +620,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                       className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
                       onMouseEnter={() =>
                         setHoveredCompanyChartKey(
-                          company.isYou ? `${company.name} (You)` : company.name
+                          company.isYou ? \`${company.name} (You)` : company.name
                         )
                       }
                       onMouseLeave={() => setHoveredCompanyChartKey(null)}
                     >
                       <div className="flex items-center space-x-3">
                         <span
-                          className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                          className={\`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
                             index === 0
                               ? 'bg-yellow-500'
                               : index === 1
@@ -656,7 +656,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       </div>
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`w-3 h-3 rounded-full ${
+                          className={\`w-3 h-3 rounded-full ${
                             company.sentiment === 'positive'
                               ? 'bg-green-500'
                               : company.sentiment === 'neutral'
