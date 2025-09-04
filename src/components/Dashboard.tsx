@@ -33,12 +33,14 @@ interface DashboardProps {
   language: 'en' | 'ro';
   onLanguageChange: (lang: 'en' | 'ro') => void;
   onShowProfile: () => void;
+  appTitle: string;
   appTitle: string; // Add this line
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile }) => {
   // Initialize currentView from localStorage or default to 'dashboard'
-  const [currentView, setCurrentView] = useState<'dashboard' | 'prompts' | 'competitors' | 'sources'>(() => {
+  onShowProfile,
+  appTitle
     const savedDashboardView = localStorage.getItem('aioptimize_dashboard_view');
     if (savedDashboardView && ['dashboard', 'prompts', 'competitors', 'sources'].includes(savedDashboardView)) {
       console.log('🔄 Dashboard - Restoring saved dashboard view:', savedDashboardView);
