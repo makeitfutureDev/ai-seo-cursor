@@ -33,6 +33,7 @@ interface DashboardProps {
   language: 'en' | 'ro';
   onLanguageChange: (lang: 'en' | 'ro') => void;
   onShowProfile: () => void;
+  appTitle: string; // Add this line
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile }) => {
