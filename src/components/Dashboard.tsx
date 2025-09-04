@@ -20,7 +20,6 @@ import {
   Globe
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import PromptVisibilityChart from './PromptVisibilityChart';
 import VisibilityChart from './VisibilityChart';
 import SourcesPreview from './SourcesPreview';
 import SourcesList from './SourcesList';
@@ -35,10 +34,9 @@ interface DashboardProps {
   onLanguageChange: (lang: 'en' | 'ro') => void;
   onShowProfile: () => void;
   appTitle: string;
-  companyData: any; // Add companyData prop
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile, appTitle, companyData }) => {
+const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile, appTitle }) => {
   // Initialize currentView from localStorage or default to 'dashboard'
   const [currentView, setCurrentView] = useState<'dashboard' | 'prompts' | 'competitors' | 'sources'>(() => {
     const savedDashboardView = localStorage.getItem('aioptimize_dashboard_view');
@@ -51,6 +49,7 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
   const [selectedPeriod, setSelectedPeriod] = useState<'today' | '7_days' | '14_days' | '30_days'>('30_days');
   const [user, setUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [companyData, setCompanyData] = useState<any>(null);
   const [userCompanies, setUserCompanies] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalResponses: 0,
@@ -189,6 +188,7 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
         const companies = companyUsers.map(cu => cu.companies).filter(Boolean);
         console.log('🏢 Dashboard.tsx - Setting companies:', companies.length);
         setUserCompanies(companies);
+        setCompanyData(companies[0]); // Set first company as default
         console.log('🏢 Dashboard.tsx - Set default company:', companies[0]?.name);
       }
     } catch (error) {
@@ -811,6 +811,7 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
     console.log('🏢 Found selected company:', selectedCompany);
     if (selectedCompany) {
       console.log('🏢 Setting companyData to:', selectedCompany);
+      setCompanyData(selectedCompany);
     } else {
       console.log('❌ Dashboard.tsx - Company not found in userCompanies');
     }
@@ -1131,19 +1132,6 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
                   hoveredCompanyChartKey={hoveredCompanyChartKey}
                 />
               </div>
-
-              {/* Prompt Visibility Chart */}
-              <div className="rounded-2xl p-6 shadow-lg" style={{ backgroundColor: '#fdedee' }}>
-                <PromptVisibilityChart
-                  companyId={companyData?.id}
-                  selectedPeriod={selectedPeriod}
-                  language={language}
-                />
-              </div>
-            </div>
-
-            {/* Industry Ranking Row */}
-            <div className="grid grid-cols-1 gap-6 mb-8">
               <div className="rounded-2xl p-6 shadow-lg" style={{ backgroundColor: '#fdedee' }}>
                 <div className="flex items-center mb-6">
                   <TrendingUp className="h-6 w-6 text-gray-900 mr-3" />
