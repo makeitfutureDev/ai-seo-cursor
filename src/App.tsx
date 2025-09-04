@@ -381,13 +381,6 @@ function App() {
         feature1: {
           title: 'Optimizare AI-First',
           description: 'Optimizează conținutul specific pentru modelele de limbaj AI și asistenții de căutare.'
-      },
-      features: {
-        title: 'De Ce Contează Vizibilitatea AI',
-        subtitle: 'SEO-ul tradițional evoluează. Căutarea AI este viitorul.',
-        feature1: {
-          title: 'Optimizare AI-First',
-          description: 'Optimizează conținutul specific pentru modelele de limbaj AI și asistenții de căutare.'
         },
         feature2: {
           title: 'Monitorizare în Timp Real',
