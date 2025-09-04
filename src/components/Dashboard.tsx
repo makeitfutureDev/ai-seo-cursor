@@ -34,13 +34,11 @@ interface DashboardProps {
   onLanguageChange: (lang: 'en' | 'ro') => void;
   onShowProfile: () => void;
   appTitle: string;
-  appTitle: string; // Add this line
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile }) => {
+const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile, appTitle }) => {
   // Initialize currentView from localStorage or default to 'dashboard'
-  onShowProfile,
-  appTitle
+  const [currentView, setCurrentView] = useState<'dashboard' | 'prompts' | 'competitors' | 'sources'>(() => {
     const savedDashboardView = localStorage.getItem('aioptimize_dashboard_view');
     if (savedDashboardView && ['dashboard', 'prompts', 'competitors', 'sources'].includes(savedDashboardView)) {
       console.log('🔄 Dashboard - Restoring saved dashboard view:', savedDashboardView);
@@ -522,7 +520,7 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
         errorCode: responsesError?.code
       });
       if (responsesError || !responses) {
-        return [];
+        return { rankingData: [], chartData: [] };
       }
 
       // Get response analysis data for these responses
@@ -550,7 +548,7 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
         errorCode: analysisError?.code
       });
       if (analysisError || !analysisData) {
-        return [];
+        return { rankingData: [], chartData: [] };
       }
 
       // Create a map of response ID to date for daily calculations
@@ -901,8 +899,6 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
         <div className="flex items-center space-x-2 mb-8">
           <Brain className="h-8 w-8 text-white" />
           <span className="text-xl font-bold text-white">AIOptimize</span>
-
-
         </div>
 
         {/* Language Toggle */}
