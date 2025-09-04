@@ -25,6 +25,7 @@ import SourcesPreview from './SourcesPreview';
 import SourcesList from './SourcesList';
 import PromptManagement from './PromptManagement';
 import CompetitorAnalysis from './CompetitorAnalysis';
+import PromptVisibilityChart from './PromptVisibilityChart';
 import CountdownTimer from './CountdownTimer';
 import { withTimeout } from '../utils/helpers';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
