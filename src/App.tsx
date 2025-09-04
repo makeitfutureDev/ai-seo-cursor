@@ -4,13 +4,14 @@ import { supabase } from './lib/supabase';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SignupPage from './components/SignupPage';
+import TermsAndConditionsPage from './components/TermsAndConditionsPage';
 import OnboardingPage from './components/OnboardingPage';
 import Dashboard from './components/Dashboard';
 import ProfilePage from './components/ProfilePage';
 import { SupabaseQueryExecutor } from './utils/supabaseUtils';
 
 function App() {
-  const [currentView, setCurrentView] = useState<'landing' | 'login' | 'signup' | 'onboarding' | 'dashboard' | 'profile'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'login' | 'signup' | 'onboarding' | 'dashboard' | 'profile' | 'terms'>('landing');
   const [language, setLanguage] = useState<'en' | 'ro'>('en');
   const [user, setUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -255,18 +256,50 @@ function App() {
   const translations = {
     en: {
       nav: {
-        features: 'Features',
+        scope: 'Scope',
+        functionalities: 'Key Features',
+        benefits: 'Benefits',
         pricing: 'Pricing',
         about: 'About',
         login: 'Login',
         getStarted: 'Get Started'
       },
       hero: {
-        title: 'Optimize Your Business for AI Search',
-        subtitle: 'Make sure your business shows up in AI answers',
+        title: 'Market Intelligence in the AI Era',
+        subtitle: 'Analyze and improve your brand presence in ChatGPT, Claude and other AI models.',
         description: 'Future-proof your digital presence. Our platform ensures your business is discoverable and prominently featured when AI assistants answer customer questions.',
         cta: 'Start Optimizing',
         watchDemo: 'Watch Demo'
+      },
+      scope: {
+        title: 'Platform Purpose',
+        subtitle: 'The purpose of this tool is to provide companies with a complete solution for:',
+        items: [
+          'Automatic monitoring of brand and competitors in LLM responses (ChatGPT in the first phase)',
+          'Calculating key metrics such as Visibility Score, Share of Voice and Sentiment',
+          'Identifying opportunities and risks when competitors gain visibility',
+          'Real-time notification when major changes occur in brand presence',
+          'Delivering data in interactive dashboards that support rapid decision making'
+        ]
+      },
+      functionalities: {
+        title: 'Key Features on Homepage',
+        items: [
+          'Real-time visibility in AI responses',
+          'Automatic alerting when brand score drops',
+          'Comparative analysis between brand and competitors',
+          'Data export for reports and presentations',
+          'Advanced filtering by period, sources and type of mention'
+        ]
+      },
+      benefits: {
+        title: 'Benefits for Users',
+        items: [
+          'You understand exactly where and how AI mentions you',
+          'You react quickly when competitors overtake you',
+          'You optimize your marketing strategy based on real data',
+          'You measure the impact of campaigns on visibility in the AI ecosystem'
+        ]
       },
       features: {
         title: 'Why AI Visibility Matters',
@@ -297,18 +330,57 @@ function App() {
     },
     ro: {
       nav: {
-        features: 'Funcționalități',
+        scope: 'Scop',
+        functionalities: 'Funcționalități Cheie',
+        benefits: 'Beneficii',
         pricing: 'Prețuri',
         about: 'Despre',
         login: 'Conectare',
         getStarted: 'Începe'
       },
       hero: {
-        title: 'Optimizează-ți Afacerea pentru Căutarea AI',
-        subtitle: 'Asigură-te că afacerea ta apare în răspunsurile AI',
+        title: 'Inteligență de piață în era AI',
+        subtitle: 'Analizează și îmbunătățește prezența brandului în ChatGPT, Claude și alte modele AI.',
         description: 'Pregătește-ți prezența digitală pentru viitor. Platforma noastră garantează că afacerea ta este descoperibilă și proeminentă când asistenții AI răspund la întrebările clienților.',
         cta: 'Începe Optimizarea',
         watchDemo: 'Vezi Demo'
+      },
+      scope: {
+        title: 'Scopul platformei',
+        subtitle: 'Scopul acestui tool este să ofere companiilor o soluție completă pentru:',
+        items: [
+          'Monitorizarea automată a brandului și competitorilor în răspunsurile LLM.(Chatgpt in prima etapa)',
+          'Calcularea metricilor cheie precum Visibility Score, Share of Voice și Sentiment.',
+          'Identificarea oportunităților și riscurilor atunci când competitorii câștigă vizibilitate.',
+          'Notificarea în timp real atunci când apar schimbări majore în prezența brandului.',
+          'Livrarea datelor în dashboard-uri interactive care sprijină luarea deciziilor rapide.'
+        ]
+      },
+      functionalities: {
+        title: 'Funcționalități cheie pe homepage',
+        items: [
+          'Vizibilitate în timp real în răspunsurile AI.',
+          'Alertare automată când scade scorul brandului.',
+          'Analiză comparativă între brand și competitori.',
+          'Export de date pentru rapoarte și prezentări.',
+          'Filtrare avansată pe perioadă, surse și tip de mențiune.'
+        ]
+      },
+      benefits: {
+        title: 'Beneficii pentru utilizatori',
+        items: [
+          'Înțelegi exact unde și cum te menționează AI-ul.',
+          'Reacționezi rapid când competitorii te depășesc.',
+          'Optimizezi strategia de marketing bazată pe date reale.',
+          'Măsori impactul campaniilor asupra vizibilității în ecosistemul AI.'
+        ]
+      },
+      features: {
+        title: 'De Ce Contează Vizibilitatea AI',
+        subtitle: 'SEO-ul tradițional evoluează. Căutarea AI este viitorul.',
+        feature1: {
+          title: 'Optimizare AI-First',
+          description: 'Optimizează conținutul specific pentru modelele de limbaj AI și asistenții de căutare.'
       },
       features: {
         title: 'De Ce Contează Vizibilitatea AI',
@@ -418,9 +490,9 @@ function App() {
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             {t.hero.title}
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-4 font-medium">
+          <h2 className="text-xl md:text-2xl text-white/90 mb-4 font-medium">
             {t.hero.subtitle}
-          </p>
+          </h2>
           <p className="text-lg text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
             {t.hero.description}
           </p>
@@ -440,8 +512,14 @@ function App() {
       <div className="relative z-10 px-6 pb-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex flex-wrap justify-center gap-8 text-white/90">
-            <a href="#features" className="hover:text-white transition-colors font-medium">
-              {t.nav.features}
+            <a href="#scope" className="hover:text-white transition-colors font-medium">
+              {t.nav.scope}
+            </a>
+            <a href="#functionalities" className="hover:text-white transition-colors font-medium">
+              {t.nav.functionalities}
+            </a>
+            <a href="#benefits" className="hover:text-white transition-colors font-medium">
+              {t.nav.benefits}
             </a>
             <a href="#pricing" className="hover:text-white transition-colors font-medium">
               {t.nav.pricing}
@@ -453,7 +531,83 @@ function App() {
         </div>
       </div>
 
-      {/* Features Section */}
+      {/* Scope Section */}
+      <div id="scope" className="relative z-10 px-6 py-16 bg-white/10 backdrop-blur-lg">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {t.scope.title}
+            </h2>
+            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
+              {t.scope.subtitle}
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {t.scope.items.map((item, index) => (
+              <div key={index} className="bg-white/20 backdrop-blur-lg rounded-2xl p-6 hover:bg-white/25 transition-all">
+                <div className="flex items-start">
+                  <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-orange-400 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                    <span className="text-white font-bold text-sm">{index + 1}</span>
+                  </div>
+                  <p className="text-white/90 leading-relaxed text-lg">{item}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Key Functionalities Section */}
+      <div id="functionalities" className="relative z-10 px-6 py-16 bg-white/5 backdrop-blur-lg">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {t.functionalities.title}
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {t.functionalities.items.map((item, index) => (
+              <div key={index} className="bg-white/20 backdrop-blur-lg rounded-2xl p-6 hover:bg-white/25 transition-all">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white font-bold">✓</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white">Feature {index + 1}</h3>
+                </div>
+                <p className="text-white/90 leading-relaxed">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Benefits Section */}
+      <div id="benefits" className="relative z-10 px-6 py-16 bg-white/10 backdrop-blur-lg">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {t.benefits.title}
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {t.benefits.items.map((item, index) => (
+              <div key={index} className="bg-white/20 backdrop-blur-lg rounded-2xl p-8 hover:bg-white/25 transition-all">
+                <div className="flex items-start">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                    <span className="text-white font-bold text-lg">★</span>
+                  </div>
+                  <p className="text-white/90 leading-relaxed text-lg">{item}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Original Features Section - kept for reference */}
       <div id="features" className="relative z-10 px-6 py-16 bg-white/10 backdrop-blur-lg">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -487,7 +641,7 @@ function App() {
         </div>
       </div>
 
-      <Footer />
+      <Footer onShowTerms={() => setCurrentView('terms')} />
 
       {/* Signup Modal */}
       {currentView === 'signup' && (
@@ -572,6 +726,14 @@ function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Terms and Conditions Modal */}
+      {currentView === 'terms' && (
+        <TermsAndConditionsPage
+          language={language}
+          onClose={() => setCurrentView('landing')}
+        />
       )}
     </div>
   );
