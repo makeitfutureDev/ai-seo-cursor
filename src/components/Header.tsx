@@ -7,6 +7,7 @@ interface HeaderProps {
   user: any;
   userProfile: any;
   language: 'en' | 'ro';
+  appTitle: string;
   onLanguageChange: (lang: 'en' | 'ro') => void;
   onShowLogin: () => void;
   onShowSignup: () => void;
@@ -16,6 +17,7 @@ const Header: React.FC<HeaderProps> = ({
   user, 
   userProfile, 
   language, 
+  appTitle,
   onLanguageChange, 
   onShowLogin, 
   onShowSignup 
@@ -64,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <Brain className="h-8 w-8 text-white" />
-            <span className="text-xl font-bold text-white">AIOptimize</span>
+            <span className="text-xl font-bold text-white">{appTitle}</span>
           </div>
 
           {/* Right side - Language toggle and Auth */}

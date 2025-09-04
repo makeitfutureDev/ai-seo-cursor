@@ -255,19 +255,18 @@ function App() {
 
   const translations = {
     en: {
+      appTitle: 'AI Visibility Monitoring',
       nav: {
         scope: 'Scope',
         functionalities: 'Key Features',
         benefits: 'Benefits',
-        pricing: 'Pricing',
-        about: 'About',
         login: 'Login',
         getStarted: 'Get Started'
       },
       hero: {
         title: 'Market Intelligence in the AI Era',
         subtitle: 'Analyze and improve your brand presence in ChatGPT, Claude and other AI models.',
-        description: 'Future-proof your digital presence. Our platform ensures your business is discoverable and prominently featured when AI assistants answer customer questions.',
+        description: 'Find out where and how your brand appears in ChatGPT, Claude and Gemini responses. AI monitoring, competitive analysis and automatic alerting for a decisive advantage.',
         cta: 'Start Optimizing',
         watchDemo: 'Watch Demo'
       },
@@ -326,22 +325,24 @@ function App() {
         noAccount: "Don't have an account?",
         signUp: 'Sign up here',
         or: 'or continue with'
+      },
+      footer: {
+        termsAndConditions: 'Terms and Conditions'
       }
     },
     ro: {
+      appTitle: 'Monitorizare Vizibilitate AI',
       nav: {
         scope: 'Scop',
         functionalities: 'Funcționalități Cheie',
         benefits: 'Beneficii',
-        pricing: 'Prețuri',
-        about: 'Despre',
         login: 'Conectare',
         getStarted: 'Începe'
       },
       hero: {
         title: 'Inteligență de piață în era AI',
         subtitle: 'Analizează și îmbunătățește prezența brandului în ChatGPT, Claude și alte modele AI.',
-        description: 'Pregătește-ți prezența digitală pentru viitor. Platforma noastră garantează că afacerea ta este descoperibilă și proeminentă când asistenții AI răspund la întrebările clienților.',
+        description: 'Află unde și cum îți apare brandul în răspunsurile ChatGPT, Claude și Gemini. Monitorizare AI, analiză competitivă și alertare automată pentru un avantaj decisiv.',
         cta: 'Începe Optimizarea',
         watchDemo: 'Vezi Demo'
       },
@@ -400,6 +401,9 @@ function App() {
         noAccount: 'Nu ai cont?',
         signUp: 'Înregistrează-te aici',
         or: 'sau continuă cu'
+      },
+      footer: {
+        termsAndConditions: 'Termeni și Condiții'
       }
     }
   };
@@ -472,6 +476,8 @@ function App() {
         user={user}
         userProfile={userProfile}
         language={language}
+        appTitle={t.appTitle}
+        appTitle={t.appTitle}
         onLanguageChange={setLanguage}
         onShowLogin={() => setCurrentView('login')}
         onShowSignup={() => setCurrentView('signup')}
@@ -513,12 +519,6 @@ function App() {
             </a>
             <a href="#benefits" className="hover:text-white transition-colors font-medium">
               {t.nav.benefits}
-            </a>
-            <a href="#pricing" className="hover:text-white transition-colors font-medium">
-              {t.nav.pricing}
-            </a>
-            <a href="#about" className="hover:text-white transition-colors font-medium">
-              {t.nav.about}
             </a>
           </div>
         </div>
@@ -567,7 +567,6 @@ function App() {
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-3">
                     <span className="text-white font-bold">✓</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white">Feature {index + 1}</h3>
                 </div>
                 <p className="text-white/90 leading-relaxed">{item}</p>
               </div>
@@ -634,7 +633,11 @@ function App() {
         </div>
       </div>
 
-      <Footer onShowTerms={() => setCurrentView('terms')} />
+      <Footer 
+        onShowTerms={() => setCurrentView('terms')} 
+        language={language}
+        translations={t.footer}
+      />
 
       {/* Signup Modal */}
       {currentView === 'signup' && (
