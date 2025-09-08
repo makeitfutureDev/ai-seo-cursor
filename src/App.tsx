@@ -451,6 +451,8 @@ function App() {
   if (currentView === 'dashboard' && user && userProfile) {
     return (
       <Dashboard
+        user={user}
+        userProfile={userProfile}
         language={language}
         onLanguageChange={setLanguage}
         onShowProfile={() => setCurrentView('profile')}
