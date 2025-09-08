@@ -89,22 +89,23 @@ const SourcesPreview: React.FC<SourcesPreviewProps> = ({ companyId, language, se
         return false;
       }
 
-      // Group by unique URL and aggregate counts
-      const urlCounts = new Map<string, number>();
+      // Group by unique domain and aggregate counts
+      const domainCounts = new Map<string, number>();
       
       sourcesData.forEach(source => {
         const count = sourceIdCounts.get(source.id) || 0;
-        if (urlCounts.has(source.link)) {
-          urlCounts.set(source.link, urlCounts.get(source.link)! + count);
+        const domain = getDomainFromUrl(source.link);
+        if (domainCounts.has(domain)) {
+          domainCounts.set(domain, domainCounts.get(domain)! + count);
         } else {
-          urlCounts.set(source.link, count);
+          domainCounts.set(domain, count);
         }
       });
 
-      // Convert to sources array with aggregated data
-      const sourcesWithStats = Array.from(urlCounts.entries()).map(([link, usage_count]) => ({
+      // Convert to sources array with aggregated domain data
+      const sourcesWithStats = Array.from(domainCounts.entries()).map(([domain, usage_count]) => ({
         id: 0, // Dummy ID since we're grouping by URL
-        link,
+        link: domain, // Store the domain as the link
         usage_count,
         usage_percentage: totalSources > 0 ? Math.round((usage_count / totalSources) * 100) : 0
       }));
@@ -204,7 +205,7 @@ const SourcesPreview: React.FC<SourcesPreviewProps> = ({ companyId, language, se
                 </div>
                 
                 <div className="ml-3 flex-1">
-                  <div className="text-gray-900 font-medium text-sm">{domain}</div>
+                  <div className="text-gray-900 font-medium text-sm">{source.link}</div>
                 </div>
                 
                 <div className="text-right">
