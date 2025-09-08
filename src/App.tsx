@@ -156,6 +156,9 @@ function App() {
         .eq('id', userId)
         .single();
 
+      // ADD THIS NEW LOG LINE:
+      console.log('👤 Profile query result - Data:', data, 'Error:', error);
+
       console.log('👤 Profile data:', data);
       console.log('❌ Profile error:', error);
 
@@ -209,6 +212,7 @@ function App() {
         }
       }
     } catch (error) {
+      // ENSURE THIS LOG IS PRESENT AND DETAILED:
       console.error('Error checking profile:', error);
     }
   };
