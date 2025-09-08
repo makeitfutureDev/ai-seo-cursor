@@ -27,7 +27,6 @@ import PromptManagement from './PromptManagement';
 import CompetitorAnalysis from './CompetitorAnalysis';
 import PromptVisibilityChart from './PromptVisibilityChart';
 import CountdownTimer from './CountdownTimer';
-import { withTimeout } from '../utils/helpers';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
 
 interface DashboardProps {
@@ -132,16 +131,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && companyData?.id) {
-        console.log('📱 Tab became visible, checking if refresh needed...');
-        
-        // Check if connection is stale and refresh if needed
-        if (SupabaseQueryExecutor.isConnectionStale()) {
-          console.log('🔄 Connection is stale, refreshing data in background...');
-          setIsRefreshing(true);
-          fetchDashboardData().finally(() => setIsRefreshing(false));
-        }
-        
-        // Update Supabase activity
+        setIsRefreshing(true);
+        fetchDashboardData().finally(() => setIsRefreshing(false));
         SupabaseQueryExecutor.updateActivity();
       }
     };
@@ -244,7 +235,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     setDashboardError('');
 
     try {
-      // Create a timeout promise that rejects after 90 seconds
+      // Create a timeout promise that rejects after 5 minutes
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
           reject(new Error('Dashboard data fetch timed out after 5 minutes'));
@@ -261,11 +252,11 @@ const Dashboard: React.FC<DashboardProps> = ({
         console.log('📊 Dashboard.tsx - Fetching responses...');
         let responses, responsesError;
         try {
-          const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+          const result = await SupabaseQueryExecutor.executeQuery(() => supabase
             .from('responses')
             .select('id, created_at, sources')
             .eq('company', companyData.id)
-            .gte('created_at', startDate)));
+            .gte('created_at', startDate));
           responses = result.data;
           responsesError = result.error;
         } catch (exception) {
@@ -289,10 +280,10 @@ const Dashboard: React.FC<DashboardProps> = ({
         console.log('📊 Dashboard.tsx - About to call supabase.from("response_analysis").select()...');
         let analysisData, analysisError;
         try {
-          const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+          const result = await SupabaseQueryExecutor.executeQuery(() => supabase
             .from('response_analysis')
             .select('response, company_appears')
-            .in('response', responseIds)));
+            .in('response', responseIds));
           analysisData = result.data;
           analysisError = result.error;
         } catch (exception) {
@@ -347,11 +338,11 @@ const Dashboard: React.FC<DashboardProps> = ({
         console.log('🏆 Dashboard.tsx - About to call supabase.from("competitors").select()...');
         let competitors, competitorsError;
         try {
-          const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+          const result = await SupabaseQueryExecutor.executeQuery(() => supabase
             .from('competitors')
             .select('id, name, website')
             .eq('company', companyData.id)
-            .eq('approved', true)));
+            .eq('approved', true));
           competitors = result.data;
           competitorsError = result.error;
         } catch (exception) {
@@ -395,12 +386,12 @@ const Dashboard: React.FC<DashboardProps> = ({
         console.log('📝 Dashboard.tsx - About to call supabase.from("prompts").select()...');
         let prompts, promptsError;
         try {
-          const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+          const result = await SupabaseQueryExecutor.executeQuery(() => supabase
             .from('prompts')
             .select('*')
             .eq('company_id', companyData.id)
             .order('created_at', { ascending: false })
-            .limit(5)));
+            .limit(5));
           prompts = result.data;
           promptsError = result.error;
         } catch (exception) {
@@ -529,11 +520,11 @@ const Dashboard: React.FC<DashboardProps> = ({
       console.log('📊 Dashboard.tsx - About to call supabase.from("responses").select()...');
       let responses, responsesError;
       try {
-        const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+        const result = await SupabaseQueryExecutor.executeQuery(() => supabase
           .from('responses')
           .select('id, created_at')
           .eq('company', companyData.id)
-          .gte('created_at', startDate)));
+          .gte('created_at', startDate));
         responses = result.data;
         responsesError = result.error;
       } catch (exception) {
@@ -558,10 +549,10 @@ const Dashboard: React.FC<DashboardProps> = ({
       console.log('📊 Dashboard.tsx - About to call supabase.from("response_analysis").select()...');
       let analysisData, analysisError;
       try {
-        const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+        const result = await SupabaseQueryExecutor.executeQuery(() => supabase
           .from('response_analysis')
           .select('response, competitor, company_appears, position, sentiment')
-          .in('response', responseIds)));
+          .in('response', responseIds));
         analysisData = result.data;
         analysisError = result.error;
       } catch (exception) {
@@ -645,10 +636,10 @@ const Dashboard: React.FC<DashboardProps> = ({
       console.log('📊 Dashboard.tsx - About to call supabase.from("competitors").select() for names...');
       let competitorData, competitorError;
       try {
-        const result = await SupabaseQueryExecutor.executeQuery(() => withTimeout(supabase
+        const result = await SupabaseQueryExecutor.executeQuery(() => supabase
           .from('competitors')
           .select('id, name')
-          .in('id', competitorIds)));
+          .in('id', competitorIds));
         competitorData = result.data;
         competitorError = result.error;
       } catch (exception) {

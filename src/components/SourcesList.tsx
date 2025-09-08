@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ExternalLink, Loader2, Database, ChevronLeft, ChevronRight, Info, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
-import { withTimeout } from '../utils/helpers';
 
 // Interface defining the props this component expects
 interface SourcesListProps {
@@ -244,17 +243,8 @@ const SourcesList: React.FC<SourcesListProps> = ({ companyId, language }) => {
     // Create visibility change handler
     handleVisibilityChange.current = () => {
       if (document.visibilityState === 'visible' && companyId) {
-        console.log('📱 Tab became visible, checking if refresh needed...');
-        
-        // Only refresh if tab was hidden for more than 1 minute
-        if (document.hidden === false) {
-          // Check if connection is stale and refresh if needed
-          if (SupabaseQueryExecutor.isConnectionStale()) {
-            console.log('🔄 Connection is stale, refreshing data in background...');
-            fetchSources(true); // Background refresh
-          }
-        }
-        
+        // Always refresh on visibility; executor will self-refresh session
+        fetchSources(true);
         // Update Supabase activity
         SupabaseQueryExecutor.updateActivity();
       }

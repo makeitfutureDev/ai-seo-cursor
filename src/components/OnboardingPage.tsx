@@ -3,7 +3,6 @@ import { Building, Globe, Target, ArrowLeft, Loader2, CheckCircle, Lightbulb } f
 import { supabase } from '../lib/supabase';
 import PromptManagement from './PromptManagement';
 import CompetitorAnalysis from './CompetitorAnalysis';
-import { withTimeout } from '../utils/helpers';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
 
 interface OnboardingPageProps {
@@ -133,7 +132,7 @@ const OnboardingPage: React.FC<OnboardingPageProps> = ({ onComplete, language, s
 
   const fetchUserProfileData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await SupabaseQueryExecutor.executeQuery(() => supabase.auth.getUser());
       if (!user) return;
 
       // Fetch user profile to pre-fill personal details
@@ -169,7 +168,7 @@ const OnboardingPage: React.FC<OnboardingPageProps> = ({ onComplete, language, s
 
   const checkExistingData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await SupabaseQueryExecutor.executeQuery(() => supabase.auth.getUser());
       if (!user) return;
 
       // Fetch user profile to pre-fill personal details
@@ -879,7 +878,7 @@ const OnboardingPage: React.FC<OnboardingPageProps> = ({ onComplete, language, s
     try {
       console.log('🎯 Marking onboarding as completed...');
       
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await SupabaseQueryExecutor.executeQuery(() => supabase.auth.getUser());
       if (!user) {
         console.error('❌ No user found for onboarding completion');
         setAnalysisError('User authentication error. Please refresh and try again.');

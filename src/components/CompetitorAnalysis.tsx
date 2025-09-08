@@ -13,7 +13,6 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { withTimeout } from '../utils/helpers';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
 
 interface Competitor {
@@ -103,16 +102,8 @@ const CompetitorAnalysis: React.FC<CompetitorAnalysisProps> = ({
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && companyId && !isAnalysisLoading) {
-        console.log('📱 Tab became visible, checking if refresh needed...');
-        
-        // Check if connection is stale and refresh if needed
-        if (SupabaseQueryExecutor.isConnectionStale()) {
-          console.log('🔄 Connection is stale, refreshing data in background...');
-          setIsRefreshing(true);
-          fetchCompetitors().finally(() => setIsRefreshing(false));
-        }
-        
-        // Update Supabase activity
+        setIsRefreshing(true);
+        fetchCompetitors().finally(() => setIsRefreshing(false));
         SupabaseQueryExecutor.updateActivity();
       }
     };

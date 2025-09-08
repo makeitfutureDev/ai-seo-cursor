@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { withTimeout } from '../utils/helpers';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
 
 const COMPANY_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
@@ -178,26 +177,22 @@ const VisibilityChart: React.FC<VisibilityChartProps> = ({
         }
       });
 
-      // Convert to chart data format
-      const chartDataArray = Array.from(dailyData.entries()).map(([date, data]) => {
-        const visibility = data.total > 0 ? Math.round((data.appears / data.total) * 100) : 0;
-        return {
-          date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          visibility
-        };
+      // Create final array for chart
+      const chartDataArray: any[] = [];
+      dailyData.forEach((value, date) => {
+        const visibility = value.total > 0 ? Math.round((value.appears / value.total) * 100) : 0;
+        chartDataArray.push({ date, visibility });
       });
 
-      // Sort by date
-      chartDataArray.sort((a, b) => {
-        const dateA = new Date(a.date + ', 2024');
-        const dateB = new Date(b.date + ', 2024');
-        return dateA.getTime() - dateB.getTime();
-      });
+      // Sort dates chronologically
+      chartDataArray.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
       setChartData(chartDataArray);
-    } catch (error) {
-      console.error('Error fetching visibility data:', error);
+      setFilteredCompanies([{ name: 'You', isYou: true, data: chartDataArray }] as any);
+    } catch (err) {
+      console.error('Error fetching visibility data:', err);
       setChartData([]);
+      setFilteredCompanies([]);
     } finally {
       setLoading(false);
     }

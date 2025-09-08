@@ -56,6 +56,41 @@ function App() {
 
   useEffect(() => {
     checkUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔄 App.tsx - Auth state change:', {
+        event,
+        hasSession: !!session,
+        hasUser: !!session?.user,
+        userId: session?.user?.id
+      });
+      
+      if (session?.user) {
+        console.log('✅ App.tsx - Auth change: User found, setting user state');
+        setUser(session.user);
+        await checkUserProfile(session.user.id);
+      } else {
+        console.log('❌ App.tsx - Auth change: No user found, resetting state');
+        setUser(null);
+        setUserProfile(null);
+        // Clear saved view when user logs out
+        localStorage.removeItem('aioptimize_current_view');
+        localStorage.removeItem('aioptimize_dashboard_view');
+        setCurrentView('landing');
+      }
+    });
+
+    return () => {
+      try {
+        // @ts-ignore: guard for different SDK return shapes
+        authListener?.subscription?.unsubscribe?.();
+        // Fallback
+        // @ts-ignore
+        authListener?.unsubscribe?.();
+      } catch (e) {
+        console.warn('Auth listener cleanup issue:', e);
+      }
+    };
   }, []);
 
   const checkUser = async () => {
@@ -89,30 +124,6 @@ function App() {
       console.log('🔄 App.tsx - checkUser completed, setting loading to false');
       setLoading(false);
     }
-
-    // Listen for auth changes
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 App.tsx - Auth state change:', {
-        event,
-        hasSession: !!session,
-        hasUser: !!session?.user,
-        userId: session?.user?.id
-      });
-      
-      if (session?.user) {
-        console.log('✅ App.tsx - Auth change: User found, setting user state');
-        setUser(session.user);
-        await checkUserProfile(session.user.id);
-      } else {
-        console.log('❌ App.tsx - Auth change: No user found, resetting state');
-        setUser(null);
-        setUserProfile(null);
-        // Clear saved view when user logs out
-        localStorage.removeItem('aioptimize_current_view');
-        localStorage.removeItem('aioptimize_dashboard_view');
-        setCurrentView('landing');
-      }
-    });
   };
 
   const checkUserProfile = async (userId: string) => {
