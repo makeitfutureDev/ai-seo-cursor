@@ -31,13 +31,22 @@ import { withTimeout } from '../utils/helpers';
 import { SupabaseQueryExecutor } from '../utils/supabaseUtils';
 
 interface DashboardProps {
+  user: any;
+  userProfile: any;
   language: 'en' | 'ro';
   onLanguageChange: (lang: 'en' | 'ro') => void;
   onShowProfile: () => void;
   appTitle: string;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onShowProfile, appTitle }) => {
+const Dashboard: React.FC<DashboardProps> = ({
+  user,
+  userProfile,
+  language,
+  onLanguageChange,
+  onShowProfile,
+  appTitle
+}) => {
   // Initialize currentView from localStorage or default to 'dashboard'
   const [currentView, setCurrentView] = useState<'dashboard' | 'prompts' | 'competitors' | 'sources'>(() => {
     const savedDashboardView = localStorage.getItem('aioptimize_dashboard_view');
@@ -48,8 +57,7 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
     return 'dashboard';
   });
   const [selectedPeriod, setSelectedPeriod] = useState<'today' | '7_days' | '14_days' | '30_days'>('30_days');
-  const [user, setUser] = useState<any>(null);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [companyId, setCompanyId] = useState<string | null>(null);
   const [companyData, setCompanyData] = useState<any>(null);
   const [userCompanies, setUserCompanies] = useState<any[]>([]);
   const [stats, setStats] = useState({
@@ -85,6 +93,30 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
       hasCompanyData: !!companyData
     });
   }, [companyData]);
+
+  // Fetch company ID when user changes
+  useEffect(() => {
+    const fetchCompanyId = async () => {
+      if (user?.id) {
+        try {
+          const { data, error } = await SupabaseQueryExecutor.executeQuery(() => supabase
+            .from('company_users')
+            .select('company_id')
+            .eq('user_id', user.id)
+            .single());
+
+          if (error) {
+            console.error('Error fetching company ID:', error);
+          } else if (data) {
+            setCompanyId(data.company_id);
+          }
+        } catch (err) {
+          console.error('Error fetching company ID:', err);
+        }
+      }
+    };
+    fetchCompanyId();
+  }, [user]);
 
   useEffect(() => {
     initializeDashboard();
@@ -154,8 +186,6 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
       });
       if (!user) return;
 
-      setUser(user);
-
       // Get user profile
       const { data: profile } = await SupabaseQueryExecutor.executeQuery(() => supabase
         .from('user_profiles')
@@ -169,7 +199,6 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
         firstName: profile?.first_name,
         lastName: profile?.last_name
       });
-      setUserProfile(profile);
 
       // Get all user's companies
       const { data: companyUsers } = await SupabaseQueryExecutor.executeQuery(() => supabase
@@ -1201,6 +1230,17 @@ const Dashboard: React.FC<DashboardProps> = ({ language, onLanguageChange, onSho
                 </div>
               </div>
             </div>
+
+            {/* Prompt Visibility Chart */}
+            {companyData?.id && (
+              <div className="mb-8">
+                <PromptVisibilityChart
+                  companyId={companyData.id}
+                  selectedPeriod={selectedPeriod}
+                  language={language}
+                />
+              </div>
+            )}
 
             {/* Bottom Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
